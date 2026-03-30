@@ -16,7 +16,7 @@ const client = new Client({
 const PREFIX = '.';
 
 // CONFIG (replace with REAL role IDs from Discord, NOT links)
-const GROUP_ROLE_ID = 'PASTE_GROUP_ROLE_ID_HERE';
+const GROUP_ROLE_ID = process.env.GROUP_ROLE_ID || 'PASTE_GROUP_ROLE_ID_HERE';
 const MUTED_ROLE_ID = '1485860847929524225';
 
 // ===== SLASH COMMANDS SETUP =====
@@ -30,9 +30,9 @@ const commands = [
     .addUserOption(opt => opt.setName('user').setDescription('User').setRequired(true))
     .addIntegerOption(opt => opt.setName('minutes').setDescription('Minutes').setRequired(true)),
   new SlashCommandBuilder().setName('group').setDescription('Manage/check group')
-    .addSubcommand(sub => sub.setName('add').addUserOption(u=>u.setName('user').setRequired(true)))
-    .addSubcommand(sub => sub.setName('remove').addUserOption(u=>u.setName('user').setRequired(true)))
-    .addSubcommand(sub => sub.setName('check').addUserOption(u=>u.setName('user').setRequired(true)))
+    .addSubcommand(sub => sub.setName('add').setDescription('Add a user to the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
+    .addSubcommand(sub => sub.setName('remove').setDescription('Remove a user from the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
+    .addSubcommand(sub => sub.setName('check').setDescription('Check if a user is in the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
 ].map(cmd => cmd.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
