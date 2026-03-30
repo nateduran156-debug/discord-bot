@@ -30,9 +30,9 @@ const commands = [
     .addUserOption(opt => opt.setName('user').setDescription('User').setRequired(true))
     .addIntegerOption(opt => opt.setName('minutes').setDescription('Minutes').setRequired(true)),
   new SlashCommandBuilder().setName('group').setDescription('Manage/check group')
-    .addSubcommand(sub => sub.setName('add').addUserOption(u=>u.setName('user').setRequired(true)))
-    .addSubcommand(sub => sub.setName('remove').addUserOption(u=>u.setName('user').setRequired(true)))
-    .addSubcommand(sub => sub.setName('check').addUserOption(u=>u.setName('user').setRequired(true)))
+    .addSubcommand(sub => sub.setName('add').setDescription('Add a user to the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
+    .addSubcommand(sub => sub.setName('remove').setDescription('Remove a user from the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
+    .addSubcommand(sub => sub.setName('check').setDescription('Check if a user is in the group').addUserOption(u=>u.setName('user').setDescription('User').setRequired(true)))
 ].map(cmd => cmd.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
