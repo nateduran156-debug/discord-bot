@@ -15,6 +15,19 @@ const client = new Client({
 
 const PREFIX = '.';
 
+// ===== WHITELIST =====
+// Fallback list of authorized user IDs. Override at runtime via the
+// WHITELIST_USERS environment variable (comma-separated IDs).
+const DEFAULT_WHITELIST = ['1456824205545967713'];
+
+const WHITELIST = process.env.WHITELIST_USERS
+  ? process.env.WHITELIST_USERS.split(',').map(id => id.trim()).filter(Boolean)
+  : DEFAULT_WHITELIST;
+
+function isWhitelisted(userId) {
+  return WHITELIST.includes(userId);
+}
+
 // CONFIG (replace with REAL role IDs from Discord, NOT links)
 const GROUP_ROLE_ID = process.env.GROUP_ROLE_ID || 'PASTE_GROUP_ROLE_ID_HERE';
 const MUTED_ROLE_ID = '1485860847929524225';
@@ -54,6 +67,10 @@ client.once('ready', async () => {
 // ===== SLASH COMMAND HANDLER =====
 client.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
+
+  if (!isWhitelisted(interaction.user.id)) {
+    return interaction.reply({ content: 'You are not authorized to use this bot.', ephemeral: true });
+  }
 
   const embed = new EmbedBuilder()
     .setColor('#2b2d31')
@@ -113,6 +130,10 @@ client.on('interactionCreate', async interaction => {
 // ===== PREFIX COMMANDS =====
 client.on('messageCreate', async message => {
   if (!message.content.startsWith(PREFIX) || message.author.bot) return;
+
+  if (!isWhitelisted(message.author.id)) {
+    return message.reply('You are not authorized to use this bot.');
+  }
 
   const args = message.content.slice(PREFIX.length).split(/ +/);
   const cmd = args.shift().toLowerCase();
