@@ -28,8 +28,8 @@ function isWhitelisted(userId) {
   return WHITELIST.includes(userId);
 }
 
-// CONFIG (replace with REAL role IDs from Discord, NOT links)
-const GROUP_ROLE_ID = process.env.GROUP_ROLE_ID || 'PASTE_GROUP_ROLE_ID_HERE';
+// CONFIG
+const ROBLOX_GROUP_URL = 'https://www.roblox.com/communities/489845165/fraidfg#!/about';
 const MUTED_ROLE_ID = '1485860847929524225';
 
 // ===== SLASH COMMANDS SETUP =====
@@ -109,17 +109,18 @@ client.on('interactionCreate', async interaction => {
     const user = interaction.options.getMember('user');
 
     if (sub === 'add') {
-      await user.roles.add(GROUP_ROLE_ID);
-      embed.setTitle('Group Added');
+      embed.setTitle('Join Roblox Group').setDescription(
+        `${user.user.username}, to join the group please use the link below:\n${ROBLOX_GROUP_URL}`
+      );
     }
     if (sub === 'remove') {
-      await user.roles.remove(GROUP_ROLE_ID);
-      embed.setTitle('Group Removed');
+      embed.setTitle('Leave Roblox Group').setDescription(
+        `${user.user.username}, to leave the group please visit the link below and click **Leave Group**:\n${ROBLOX_GROUP_URL}`
+      );
     }
     if (sub === 'check') {
-      const hasRole = user.roles.cache.has(GROUP_ROLE_ID);
-      embed.setTitle('Group Check').setDescription(
-        hasRole ? `${user.user.username} is in the group` : `${user.user.username} is NOT in the group`
+      embed.setTitle('Roblox Group').setDescription(
+        `To check membership for ${user.user.username}, visit the group page:\n${ROBLOX_GROUP_URL}`
       );
     }
 
@@ -144,10 +145,8 @@ client.on('messageCreate', async message => {
     const user = message.mentions.members.first();
     if (!user) return message.reply('Mention user');
 
-    const hasRole = user.roles.cache.has(GROUP_ROLE_ID);
-
-    embed.setTitle('Group Check').setDescription(
-      hasRole ? `${user.user.username} is in the group` : `${user.user.username} is NOT in the group`
+    embed.setTitle('Roblox Group').setDescription(
+      `To check membership for ${user.user.username}, visit the group page:\n${ROBLOX_GROUP_URL}`
     );
 
     return message.reply({ embeds: [embed] });
@@ -164,6 +163,6 @@ SETUP:
 3. node index.js
 
 NOTE:
-- Roblox group links CANNOT be used as role IDs
-- You MUST use a Discord role ID
+- Group commands now use the Roblox group URL instead of Discord roles
+- Roblox group: https://www.roblox.com/communities/489845165/fraidfg#!/about
 */
